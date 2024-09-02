@@ -35,12 +35,6 @@ public class RestaurantReservationController {
 		return restaurantReservationService.saveCustomer(customerData);
 	}
     
-    @PostMapping("/customers")
-    public CustomerData saveCustomer(@RequestBody CustomerData customerData) {
-    	log.info("Saving customer {}", customerData);
-        return restaurantReservationService.saveCustomer(customerData);
-    }
-    
     @PutMapping("/{customerId}") // Update
 	public CustomerData updateCustomer(@PathVariable Long customerId, @RequestBody CustomerData customerData) {
 		customerData.setCustomerId(customerId);
@@ -49,11 +43,12 @@ public class RestaurantReservationController {
 	}
     
     @PostMapping("/{customerId}/reservation")
-	@ResponseStatus(code = HttpStatus.CREATED)
-	public CustomerReservation addReservationToCustomer(@PathVariable Long customerId, @RequestBody CustomerReservation customerReservation) {
-		log.info("Adding reservation {} to customer with ID {}", customerReservation, customerId);
-	    return restaurantReservationService.saveReservation(customerId, customerReservation);
-	}
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public CustomerReservation addReservationToCustomer(@PathVariable Long customerId, @RequestBody CustomerReservation customerReservation) {
+    	log.info("Received request to add reservation for customerId: {}", customerReservation, customerId);
+        log.info("Request payload: {}", customerReservation);
+        return restaurantReservationService.saveReservation(customerId, customerReservation);
+    }
     
     @PostMapping("/{customerId}/restaurant")
 	@ResponseStatus(code = HttpStatus.CREATED)
@@ -64,7 +59,7 @@ public class RestaurantReservationController {
     
     @GetMapping
     public List<CustomerData> getAllCustomers() {
-        log.info("Retrieving all customers");
+        log.info("Getting all customers");
         return restaurantReservationService.retrieveAllCustomers();
     }
 	

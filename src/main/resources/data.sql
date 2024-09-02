@@ -11,19 +11,15 @@ CREATE TABLE customer (
 
 CREATE TABLE restaurant (
     restaurant_id INT AUTO_INCREMENT PRIMARY KEY,
-    restaurant_name VARCHAR(255) NOT NULL,
+    restaurant_name VARCHAR(255),
     restaurant_address VARCHAR(255),
     restaurant_phone VARCHAR(20)
 );
 
 CREATE TABLE reservation (
     reservation_id INT AUTO_INCREMENT PRIMARY KEY,
-    reservation_time TIME NOT NULL,
-    reservation_date DATE NOT NULL,
-    customer_id INT NOT NULL,
-    restaurant_id INT NOT NULL,
-    FOREIGN KEY (customer_id) REFERENCES customer(customer_id) ON DELETE CASCADE,
-    FOREIGN KEY (restaurant_id) REFERENCES restaurant(restaurant_id) ON DELETE CASCADE
+    reservation_time VARCHAR(20),
+    reservation_date VARCHAR(24)
 );
 
 CREATE TABLE customer_restaurant (

@@ -77,12 +77,20 @@ public class RestaurantReservationService {
         return result;
     }
     
-    private Restaurant findOrCreateRestaurant(Long restaurantId) {
+    private Restaurant findOrCreateRestaurant(Long restaurantId, Long customerId) {
         if (Objects.isNull(restaurantId)) {
             return new Restaurant();
         }
 
-        return findRestaurantById(restaurantId, restaurantId);
+        return findRestaurantById(restaurantId, customerId);
+    }
+    
+    private Reservation findOrCreateReservation(Long reservationId, Long customerId) {
+        if(Objects.isNull(reservationId)) {
+            return new Reservation();
+        }
+        
+        return findReservationById(reservationId, customerId);
     }
     
     private Restaurant findRestaurantById(Long restaurantId, Long customerId) {
@@ -129,27 +137,31 @@ public class RestaurantReservationService {
     	restaurant.setRestaurantPhone(customerRestaurant.getRestaurantPhone());
     }
     
-    private Reservation findOrCreateReservation(Long customerId, Long reservationId) {
-        if(Objects.isNull(reservationId)) {
-            return new Reservation();
-        }
-        
-        return findReservationById(reservationId, customerId);
-    }
-    
     @Transactional(readOnly = false)
-    public CustomerReservation saveReservation(Long customerId, Long restaurantId, CustomerReservation customerReservation) {
+    public CustomerReservation saveReservation(Long customerId, CustomerReservation customerReservation) {
         Customer customer = findCustomerById(customerId);
-        Restaurant restaurant = findRestaurantById(customerId, restaurantId);
         Long reservationId = customerReservation.getReservationId();
+        Long restaurantId = customerReservation.getRestaurantId();
+
+        if (restaurantId == null) {
+            throw new IllegalArgumentException("Restaurant ID must not be null");
+        }
+
         Reservation reservation = findOrCreateReservation(customerId, reservationId);
-        
+
+        // Retrieve the Restaurant entity using the restaurantId
+        Restaurant restaurant = restaurantDao.findById(restaurantId)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid Restaurant ID: " + restaurantId));
+
         copyReservationFields(reservation, customerReservation);
-        
+
+        // Set the associated customer and restaurant
         reservation.setCustomer(customer);
-        reservation.setRestaurant(restaurant);  // Ensure the restaurant is set
+        reservation.setRestaurant(restaurant);
+        reservation.setReservationDate(customerReservation.getReservationDate());
+        reservation.setReservationTime(customerReservation.getReservationTime());
         customer.getReservations().add(reservation);
-        
+
         Reservation dbReservation = reservationDao.save(reservation);
 
         return new CustomerReservation(dbReservation);
@@ -158,7 +170,8 @@ public class RestaurantReservationService {
     @Transactional(readOnly = false)
     public CustomerRestaurant saveRestaurant(Long customerId, CustomerRestaurant customerRestaurant) {
         Customer customer = findCustomerById(customerId);
-        Restaurant restaurant = findOrCreateRestaurant(customerId);
+        Long restaurantId = customerRestaurant.getRestaurantId();
+        Restaurant restaurant = findOrCreateRestaurant(restaurantId, customerId);
 
         copyRestaurantFields(restaurant, customerRestaurant);
 
@@ -180,14 +193,4 @@ public class RestaurantReservationService {
         Customer customer = findCustomerById(customerId);
         customerDao.delete(customer);
     }
-	
-	public void addReservation(Customer customer, Reservation reservation) {
-	    customer.getReservations().add(reservation);
-	    reservation.setCustomer(customer);
-	}
-
-	public CustomerReservation saveReservation(Long customerId, CustomerReservation customerReservation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

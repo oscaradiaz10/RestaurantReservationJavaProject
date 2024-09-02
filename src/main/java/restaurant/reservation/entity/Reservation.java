@@ -1,8 +1,5 @@
 package restaurant.reservation.entity;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,10 +17,10 @@ public class Reservation {
     private Long reservationId;
 
     @Column(nullable = false)
-    private LocalTime reservationTime;
+    private String reservationTime;
 
     @Column(nullable = false)
-    private LocalDate reservationDate;
+    private String reservationDate;
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)

@@ -1,20 +1,10 @@
 spring:
-   datasource:
-      username: restaurant_reservation
-      password: restaurant_reservation
-      url: jdbc:mysql://localhost:3306/restaurant_reservation
+  datasource:
+    username: restaurant_reservation
+    password: restaurant_reservation
+    url: jdbc:mysql://localhost:3306/restaurant_reservation
       
-   jpa:
-      hibernate:
-         ddl-auto: update
-      show-sql: true
-      defer-datasource-initialization: true
-      
-   sql: 
-      init: 
-         mode: never
-
-   logging:
-      level:
-         org.springframework: DEBUG
-                  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true

@@ -1,7 +1,5 @@
 package restaurant.reservation.controller.model;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,6 +44,7 @@ public class CustomerData {
 
 		public CustomerRestaurant(Restaurant restaurant) {
 			restaurantId = restaurant.getRestaurantId();
+			restaurantName = restaurant.getRestaurantName();
 			restaurantAddress = restaurant.getRestaurantAddress();
 			restaurantPhone = restaurant.getRestaurantPhone();
 		}
@@ -55,13 +54,16 @@ public class CustomerData {
 	@NoArgsConstructor
 	public static class CustomerReservation {
 		private Long reservationId;
-		private LocalTime reservationTime;
-		private LocalDate reservationDate;
+		private String reservationTime;
+		private String reservationDate;
+		
+		private Long restaurantId;
 
 		public CustomerReservation(Reservation reservation) {
 			reservationId = reservation.getReservationId();
 			reservationTime = reservation.getReservationTime();
 			reservationDate = reservation.getReservationDate();
+			restaurantId = reservation.getRestaurant().getRestaurantId();
 		}
 	}
 }
